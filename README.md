@@ -5,11 +5,11 @@
 A high-performance web dashboard built with Next.js 15, focusing on algorithmic visualization and community-driven data management. This project was developed to demonstrate full-stack proficiency and optimization skills for the Pointercrate development team.
 
 ## 🚀 Live Demo
-**Link:** [https://your-project-link.vercel.app](https://your-project-link.vercel.app)
+**Link:** [https://your-project-link.vercel.app](https://portforlio-snowy.vercel.app/)
 
 ## 🛠️ Tech Stack & Deployment
-- **Framework:** Next.js 15 (App Router)
-- **Styling:** Tailwind CSS (Bento Grid UI)
+- **Framework:** Next.js 15
+- **Styling:** Tailwind CSS
 - **Logic:** TypeScript & Server Actions
 - **Deployment:** **Vercel**
   - Implemented automatic deployments via GitHub integration.
