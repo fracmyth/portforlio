@@ -1,6 +1,6 @@
 # DevPortfolio | Pointercrate Submission
 
-[![Deployment Status](https://img.shields.io/badge/Vercel-Live_Demo-black?style=for-the-badge&logo=vercel)]((https://portforlio-snowy.vercel.app/))
+[![Deployment Status](https://img.shields.io/badge/Vercel-Live_Demo-black?style=for-the-badge&logo=vercel)]([https://portforlio-snowy.vercel.app/])
 
 A high-performance web dashboard built with Next.js 15, focusing on algorithmic visualization and community-driven data management. This project was developed to demonstrate full-stack proficiency and optimization skills for the Pointercrate development team.
 
