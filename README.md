@@ -1,6 +1,6 @@
 # DevPortfolio | Pointercrate Submission
 
-[![Deployment Status](https://img.shields.io/badge/Vercel-Live_Demo-black?style=for-the-badge&logo=vercel)]([https://portforlio-snowy.vercel.app/])
+[![Deployment Status](https://img.shields.io/badge/Vercel-Live_Demo-black?style=for-the-badge&logo=vercel)](https://vercel.com/trkckfrs-projects/portforlio)
 
 A high-performance web dashboard built with Next.js 15, focusing on algorithmic visualization and community-driven data management. This project was developed to demonstrate full-stack proficiency and optimization skills for the Pointercrate development team.
 
@@ -8,8 +8,8 @@ A high-performance web dashboard built with Next.js 15, focusing on algorithmic 
 **Link:** [https://your-project-link.vercel.app](https://your-project-link.vercel.app)
 
 ## 🛠️ Tech Stack & Deployment
-- **Framework:** Next.js 15
-- **Styling:** Tailwind CSS
+- **Framework:** Next.js 15 (App Router)
+- **Styling:** Tailwind CSS (Bento Grid UI)
 - **Logic:** TypeScript & Server Actions
 - **Deployment:** **Vercel**
   - Implemented automatic deployments via GitHub integration.
@@ -20,7 +20,7 @@ A high-performance web dashboard built with Next.js 15, focusing on algorithmic 
 ### 1. Algorithm Visualizer
 An interactive tool designed to visualize complex sorting logic. 
 - **Tech:** Custom recursive implementations in TypeScript.
-- **Key Feature:** Visualizes $O(n \log n)$ vs. $O(n^2)$ efficiency using asynchronous state updates to provide real-time frame-by-frame rendering.
+- **Key Feature:** Visualizes $O(n \log n)$ efficiency using asynchronous state updates to provide real-time frame-by-frame rendering.
 
 ### 2. Mini-Demon List (Top 50)
 A specialized ranking dashboard for the Geometry Dash community.
@@ -40,4 +40,4 @@ A functional workflow for community members to submit level completions.
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/fracmyth/portforlio.git](https://github.com/fracmyth/portforlio.git
+   git clone [https://github.com/fracmyth/portforlio.git](https://github.com/fracmyth/portforlio.git)
