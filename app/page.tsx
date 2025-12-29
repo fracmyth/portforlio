@@ -1,230 +1,83 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-type AlgoType = "bubble" | "selection" | "insertion" | "quick" | "merge";
+import Link from "next/link";
 
 export default function Home() {
-  const [array, setArray] = useState<number[]>([]);
-  const [comparing, setComparing] = useState<number[]>([]);
-  const [isSorting, setIsSorting] = useState(false);
-  const [selectedAlgo, setSelectedAlgo] = useState<AlgoType>("bubble");
-  const [speed, setSpeed] = useState(50); // Lower is faster animation
-  const [stats, setStats] = useState({ comparisons: 0, swaps: 0, time: 0 });
-
-  const resetArray = () => {
-    if (isSorting) return;
-    const newItems = Array.from({ length: 40 }, () => Math.floor(Math.random() * 350) + 20);
-    setArray(newItems);
-    setComparing([]);
-    setStats({ comparisons: 0, swaps: 0, time: 0 });
-  };
-
-  useEffect(() => { resetArray(); }, []);
-
-  const sleep = () => new Promise((resolve) => setTimeout(resolve, speed));
-
-  const updateStats = (startTime: number, compInc = 0, swapInc = 0) => {
-    setStats(prev => ({
-      comparisons: prev.comparisons + compInc,
-      swaps: prev.swaps + swapInc,
-      time: Math.round(performance.now() - startTime)
-    }));
-  };
-
-  const bubbleSort = async (arr: number[], startTime: number) => {
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length - i - 1; j++) {
-        setComparing([j, j + 1]);
-        updateStats(startTime, 1);
-        await sleep();
-        if (arr[j] > arr[j + 1]) {
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-          updateStats(startTime, 0, 1);
-          setArray([...arr]);
-        }
-      }
-    }
-  };
-
-  const selectionSort = async (arr: number[], startTime: number) => {
-    for (let i = 0; i < arr.length; i++) {
-      let minIdx = i;
-      for (let j = i + 1; j < arr.length; j++) {
-        setComparing([i, j]);
-        updateStats(startTime, 1);
-        await sleep();
-        if (arr[j] < arr[minIdx]) minIdx = j;
-      }
-      if (minIdx !== i) {
-        [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
-        updateStats(startTime, 0, 1);
-        setArray([...arr]);
-      }
-    }
-  };
-
-  const insertionSort = async (arr: number[], startTime: number) => {
-    for (let i = 1; i < arr.length; i++) {
-      let key = arr[i];
-      let j = i - 1;
-      while (j >= 0 && arr[j] > key) {
-        setComparing([j, j + 1]);
-        updateStats(startTime, 1, 1);
-        arr[j + 1] = arr[j];
-        setArray([...arr]);
-        await sleep();
-        j--;
-      }
-      arr[j + 1] = key;
-      setArray([...arr]);
-    }
-  };
-
-  const quickSort = async (arr: number[], low: number, high: number, startTime: number) => {
-    if (low < high) {
-      let pivotIdx = await partition(arr, low, high, startTime);
-      await quickSort(arr, low, pivotIdx - 1, startTime);
-      await quickSort(arr, pivotIdx + 1, high, startTime);
-    }
-  };
-
-  const partition = async (arr: number[], low: number, high: number, startTime: number) => {
-    let pivot = arr[high];
-    let i = low - 1;
-    for (let j = low; j < high; j++) {
-      setComparing([j, high]);
-      updateStats(startTime, 1);
-      await sleep();
-      if (arr[j] < pivot) {
-        i++;
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-        updateStats(startTime, 0, 1);
-        setArray([...arr]);
-      }
-    }
-    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-    updateStats(startTime, 0, 1);
-    setArray([...arr]);
-    return i + 1;
-  };
-
-  const mergeSort = async (arr: number[], l: number, r: number, startTime: number) => {
-    if (l >= r) return;
-    const m = l + Math.floor((r - l) / 2);
-    await mergeSort(arr, l, m, startTime);
-    await mergeSort(arr, m + 1, r, startTime);
-    await merge(arr, l, m, r, startTime);
-  };
-
-  const merge = async (arr: number[], l: number, m: number, r: number, startTime: number) => {
-    let leftArr = arr.slice(l, m + 1);
-    let rightArr = arr.slice(m + 1, r + 1);
-    let i = 0, j = 0, k = l;
-
-    while (i < leftArr.length && j < rightArr.length) {
-      setComparing([k]);
-      updateStats(startTime, 1);
-      await sleep();
-      if (leftArr[i] <= rightArr[j]) {
-        arr[k] = leftArr[i];
-        i++;
-      } else {
-        arr[k] = rightArr[j];
-        j++;
-      }
-      updateStats(startTime, 0, 1);
-      setArray([...arr]);
-      k++;
-    }
-    while (i < leftArr.length) {
-      arr[k] = leftArr[i]; i++; k++;
-      setArray([...arr]); await sleep();
-    }
-    while (j < rightArr.length) {
-      arr[k] = rightArr[j]; j++; k++;
-      setArray([...arr]); await sleep();
-    }
-  };
-
-  const startSort = async () => {
-    setIsSorting(true);
-    const arrCopy = [...array];
-    const startTime = performance.now();
-
-    if (selectedAlgo === "bubble") await bubbleSort(arrCopy, startTime);
-    if (selectedAlgo === "selection") await selectionSort(arrCopy, startTime);
-    if (selectedAlgo === "insertion") await insertionSort(arrCopy, startTime);
-    if (selectedAlgo === "quick") await quickSort(arrCopy, 0, arrCopy.length - 1, startTime);
-    if (selectedAlgo === "merge") await mergeSort(arrCopy, 0, arrCopy.length - 1, startTime);
-
-    setComparing([]);
-    setIsSorting(false);
-  };
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950 p-6 text-white font-sans">
-      <div className="max-w-5xl w-full">
-        <header className="flex justify-between items-end mb-8">
-          <div>
-            <h1 className="text-5xl font-black uppercase tracking-tighter leading-none">
-              Algo<span className="text-blue-600">Viz</span>
-            </h1>
-          </div>          
-          <div className="flex gap-4 bg-zinc-900 p-3 rounded-2xl border border-zinc-800 shadow-2xl">
-            <select 
-              value={selectedAlgo} 
-              onChange={(e) => setSelectedAlgo(e.target.value as AlgoType)}
-              disabled={isSorting}
-              className="bg-zinc-800 p-2 rounded-lg border border-zinc-700 outline-none text-sm font-bold disabled:opacity-50"
-            >
-              <option value="bubble">Bubble Sort</option>
-              <option value="selection">Selection Sort</option>
-              <option value="insertion">Insertion Sort</option>
-              <option value="quick">Quicksort</option>
-              <option value="merge">Merge Sort</option>
-            </select>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-black text-white px-6 py-20">
 
-            <div className="flex flex-col justify-center px-2">
-              <span className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Animation Speed</span>
-              <input 
-                type="range" min="5" max="200" step="5"
-                value={speed} onChange={(e) => setSpeed(Number(e.target.value))} 
-                className="accent-blue-600 h-1" 
-              />
-            </div>
-
-            <button onClick={resetArray} disabled={isSorting} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-bold transition-colors disabled:opacity-50">Reset</button>
-            <button onClick={startSort} disabled={isSorting} className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-black text-sm transition-all disabled:opacity-50 uppercase shadow-lg shadow-blue-900/20">Run Algorithm</button>
-          </div>
+      <div className="max-w-3xl w-full text-center">
+        
+        <header className="mb-12">
+          <h1 className="text-6xl font-black tracking-tighter uppercase italic mb-4">
+            DEV<span className="text-blue-600">PORTFOLIO</span>
+          </h1>
+          <p className="text-zinc-400 text-lg font-medium">
+            KOI #4 | Competitive Programmer | Full-Stack Developer
+          </p>
         </header>
 
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: "Comparisons", val: stats.comparisons, color: "text-blue-400" },
-            { label: "Swaps / Writes", val: stats.swaps, color: "text-red-400" },
-            { label: "Time Elapsed", val: `${stats.time}ms`, color: "text-green-400" }
-          ].map((s, i) => (
-            <div key={i} className="bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl text-center">
-              <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1 block">{s.label}</span>
-              <span className={`text-2xl font-mono font-bold ${s.color}`}>{s.val}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+          
+          <Link href="/visualizer" className="group p-8 bg-zinc-900 rounded-3xl border border-zinc-800 hover:border-blue-600 transition-all shadow-2xl">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-blue-600/10 rounded-xl text-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 11-4-7"/><path d="m5 11 4-7"/><path d="M11 13v4"/><path d="M15 17v-3"/><path d="M7 17v-2"/><path d="M9 22h6c.5 0 1-.2 1.4-.6.4-.4.6-.9.6-1.4V9c0-.5-.2-1-.6-1.4-.4-.4-.9-.6-1.4-.6H9c-.5 0-1 .2-1.4.6-.4.4-.6.9-.6 1.4v11c0 .5.2 1 .6 1.4.4.4.9.6 1.4.6z"/></svg>
+              </div>
+              <span className="text-xs font-black text-zinc-600 group-hover:text-blue-600 uppercase tracking-widest">Logic</span>
             </div>
-          ))}
+            <h2 className="text-2xl font-bold mb-2 text-white">Algorithm Visualizer</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              Showcasing $O(n \log n)$ efficiency through interactive sorting. Built with custom async recursion.
+            </p>
+          </Link>
+
+          <Link href="/list" className="group p-8 bg-zinc-900 rounded-3xl border border-zinc-800 hover:border-green-600 transition-all shadow-2xl">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-green-600/10 rounded-xl text-green-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m19 10-4 4 4 4"/></svg>
+              </div>
+              <span className="text-xs font-black text-zinc-600 group-hover:text-green-600 uppercase tracking-widest">Data</span>
+            </div>
+            <h2 className="text-2xl font-bold mb-2 text-white">Mini-Demon List</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              High-performance Top 50 dashboard. Optimized for rapid data filtering and community-sourced rankings.
+            </p>
+          </Link>
+
+          <Link href="/submit" className="group p-8 bg-zinc-900 rounded-3xl border border-zinc-800 hover:border-purple-600 transition-all shadow-2xl">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-purple-600/10 rounded-xl text-purple-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 15h6"/><path d="M12 12v6"/></svg>
+              </div>
+              <span className="text-xs font-black text-zinc-600 group-hover:text-purple-600 uppercase tracking-widest">Forms</span>
+            </div>
+            <h2 className="text-2xl font-bold mb-2 text-white">Record Submission</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              A submission workflow with form validation and dynamic UI feedback for list moderators.
+            </p>
+          </Link>
+
+          <div className="p-8 bg-zinc-900/40 rounded-3xl border border-zinc-800 flex flex-col justify-center">
+            <h2 className="text-xs font-black text-zinc-600 uppercase tracking-[0.2em] mb-4">Technical Proficiency</h2>
+            <div className="flex flex-wrap gap-2">
+              {["TypeScript", "Next.js", "C++", "Django", "Python", "Olympiad Math", "Tailwind", "Git"].map((skill) => (
+                <span key={skill} className="px-3 py-1 bg-zinc-800 text-zinc-300 text-[10px] font-bold rounded-full border border-zinc-700">
+                  {skill}
+                </span>
+              ))}
+            </div>
+            <p className="mt-4 text-zinc-500 text-xs leading-relaxed">
+              Applying competitive programming rigor to scalable web systems.
+            </p>
+          </div>
         </div>
         
-        <div className="flex h-[450px] items-end justify-center gap-[2px] border-b border-zinc-800 pb-2 relative overflow-hidden bg-zinc-900/20 rounded-t-3xl p-6">
-          {array.map((value, index) => (
-            <div 
-              key={index} 
-              className="w-full rounded-t-[1px] transition-all duration-75" 
-              style={{ 
-                height: `${value}px`, 
-                backgroundColor: comparing.includes(index) ? "#ef4444" : "#2563eb",
-                boxShadow: comparing.includes(index) ? "0 0 15px rgba(239, 68, 68, 0.5)" : "none"
-              }} 
-            />
-          ))}
-        </div>
+        <footer className="mt-16 flex justify-center gap-8 text-zinc-600 font-bold uppercase tracking-widest text-xs">
+          <a href="https://github.com/fracmyth" className="hover:text-white transition-colors">GitHub</a>
+          <span className="text-zinc-800">|</span>
+        </footer>
+
       </div>
     </main>
   );
